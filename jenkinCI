@@ -1,0 +1,27 @@
+pipeline {
+   agent any
+   
+   tools {
+      maven "parveen_maven"
+   }
+
+   stages {
+      stage(' git checkout') {
+         steps {
+            git 'https://github.com/kliakos/sparkjava-war-example.git'
+          
+           } 
+      }
+      stage('Java build') {
+         steps {
+        sh "mvn clean package"
+         } 
+         
+      }
+      stage('Java Deploy') {
+         steps {
+         deploy adapters: [tomcat8(credentialsId: 'b7d57797-f6f3-44a3-930f-c92e01a8d340', path: '', url: 'http://3.14.102.193:8010')], contextPath: null, war: '**/*.war'
+         } 
+      }
+   }
+}
